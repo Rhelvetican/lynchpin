@@ -1,11 +1,18 @@
+use std::path::Path;
+
 use anyhow::Result;
+use init::init;
 use json::{read_json, write_json};
 use reqwest::get;
 use serde_json::{json, Value};
+mod init;
 mod json;
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    if !Path::new("./result/result.json").exists() {
+        init()?;
+    }
     update().await?;
     calculate_diff()?;
     Ok(())
@@ -13,7 +20,11 @@ async fn main() -> Result<()> {
 
 async fn update() -> Result<()> {
     let mut json = read_json("./result/result.json");
+    let last = json.clone().as_array().unwrap().last().unwrap().clone();
     let res = update_json().await?;
+    if last == res {
+        return Ok(());
+    }
     json.as_array_mut().unwrap().push(res);
     write_json("./result/result.json", json);
     Ok(())
@@ -36,7 +47,7 @@ fn calculate_diff() -> Result<()> {
         tmp_vec.push(progress);
     }
     let mut res = Vec::new();
-    res[0] = json!({ "diff": tmp_vec[0] });
+    res.push(json!({ "diff": tmp_vec[0] }));
     for i in 1..tmp_vec.len() {
         res.push(json!({ "diff": tmp_vec[i] - tmp_vec[i - 1]}));
     }
