@@ -1,0 +1,29 @@
+on:
+    schedule:
+        - cron: "0 0 * * *"
+    workflow_dispatch:
+
+name: Update
+
+jobs:
+    update:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+              with:
+                  ref: main
+            - name: Setup Rust
+              uses: actions-rust-lang/setup-rust-toolchain@v1
+
+            - name: Run
+              run: |
+                  cargo run --release
+
+            - name: Update
+              run: |
+                  git config --global user.name 'github-actions[bot]'
+                  git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+                  git add . && git commit -m 'Automated Update' && git push origin main || true
