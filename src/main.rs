@@ -44,6 +44,9 @@ fn calculate_diff() -> Result<()> {
     let iter = json.as_array().unwrap().iter();
     for value in iter {
         let progress = value["data"]["progress"].as_u64().unwrap();
+        if progress == 100 {
+            call_when_100_percent()
+        }
         tmp_vec.push(progress);
     }
     let mut res = Vec::new();
@@ -53,4 +56,8 @@ fn calculate_diff() -> Result<()> {
     }
     write_json("./result/diff.json", res);
     Ok(())
+}
+
+fn call_when_100_percent() {
+    println!("100%")
 }
