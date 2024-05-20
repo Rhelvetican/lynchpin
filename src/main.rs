@@ -59,5 +59,5 @@ fn calculate_diff() -> Result<()> {
 }
 
 fn call_when_100_percent() {
-    println!("100%")
+    println!("\n100%\n")
 }
