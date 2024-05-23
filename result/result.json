@@ -40,5 +40,12 @@
             "progress": 0
         },
         "msg": ""
+    },
+    {
+        "code": 0,
+        "data": {
+            "progress": 4
+        },
+        "msg": ""
     }
 ]
